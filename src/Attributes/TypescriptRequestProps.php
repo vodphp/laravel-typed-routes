@@ -9,6 +9,5 @@ class TypescriptRequestProps
 {
     public function __construct(
         public string $typescriptType,
-    ) {
-    }
+    ) {}
 }

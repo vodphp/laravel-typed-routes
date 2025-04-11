@@ -9,6 +9,5 @@ class TypescriptResponseProps
 {
     public function __construct(
         public string $typescriptType,
-    ) {
-    }
+    ) {}
 }

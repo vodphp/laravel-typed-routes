@@ -2,7 +2,6 @@
 
 namespace Vod\LaravelTypedRoutes\Commands;
 
-
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,14 +15,14 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
-use Vod\LaravelTypedRoutes\Attributes\TypescriptRequestProps;
-use Vod\LaravelTypedRoutes\Attributes\TypescriptResponseProps;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 use Spatie\TypeScriptTransformer\Formatters\PrettierFormatter;
 use Spatie\TypeScriptTransformer\Transformers\TransformsTypes;
 use Spatie\TypeScriptTransformer\TypeReflectors\ClassTypeReflector;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
 use Throwable;
+use Vod\LaravelTypedRoutes\Attributes\TypescriptRequestProps;
+use Vod\LaravelTypedRoutes\Attributes\TypescriptResponseProps;
 
 class TypescriptTransformRoutes extends Command
 {
@@ -35,8 +34,7 @@ class TypescriptTransformRoutes extends Command
 
     protected const ERROR_RESPONSE_TYPE = 'GenericRouteError';
 
-    protected null|TypeScriptTransformerConfig $config = null;
-
+    protected ?TypeScriptTransformerConfig $config = null;
 
     public function handle(
         TypeScriptTransformerConfig $config,
@@ -47,11 +45,10 @@ class TypescriptTransformRoutes extends Command
         $schema = [];
         foreach ($routes as $route) {
             if (! is_string($route->uri)) {
-                $this->line("Only string routes are supported");
+                $this->line('Only string routes are supported');
+
                 continue;
             }
-
-   
 
             $parts = Str::replace('/', '.', $route->uri);
 
@@ -101,7 +98,7 @@ class TypescriptTransformRoutes extends Command
     }
 
     /**
-     * @param array<string, mixed>|RoutingRoute $routes
+     * @param  array<string, mixed>|RoutingRoute  $routes
      */
     private function buildChildRoutes(array|RoutingRoute $routes, ?string $key = null): string
     {
@@ -129,11 +126,12 @@ class TypescriptTransformRoutes extends Command
             return $part;
         } else {
             $route = $routes;
-            
+
             $requestType = $this->requestType($route);
             $responseType = $this->responseType($route);
-          
+
             $part = "() => RouteMethods<$requestType,$responseType>;";
+
             return $part;
         }
     }
@@ -157,6 +155,7 @@ class TypescriptTransformRoutes extends Command
                 }
             } catch (Throwable $error) {
                 $this->warn('Error getting rules for '.$controller.'@'.$method);
+
                 return 'any';
             }
 
@@ -200,7 +199,7 @@ class TypescriptTransformRoutes extends Command
                     $typescriptType = $this->phpTypeToTypescriptType($parameterClass);
                     if ($typescriptType && $typescriptType !== 'any') {
                         return $typescriptType;
-                    }   
+                    }
 
                     $dataValidatorResolver = app('Spatie\LaravelData\Resolvers\DataValidatorResolver');
                     $validator = $dataValidatorResolver->execute($parameterClass, []);
@@ -217,7 +216,7 @@ class TypescriptTransformRoutes extends Command
     }
 
     /**
-     * @param array<string, string|array<int, string>> $rules
+     * @param  array<string, string|array<int, string>>  $rules
      */
     private function validationRulesToTypescriptTypes(array $rules): string
     {
@@ -232,6 +231,7 @@ class TypescriptTransformRoutes extends Command
             $subRules = is_string($rule) ? explode('|', $rule) : $rule;
             if (! is_array($subRules)) {
                 $type .= 'any;';
+
                 continue;
             }
             $stringTypes = ['string', 'email', 'url'];
@@ -281,7 +281,7 @@ class TypescriptTransformRoutes extends Command
             $returnType = $actionReflection->getReturnType();
             if (! $returnType) {
                 return throw new Exception('No return type defined for '.$controller.'@'.$method);
-            }      
+            }
             $typescriptType = $this->reflectionTypeToTypescriptType($returnType);
             if ($typescriptType) {
                 return $typescriptType;
@@ -367,11 +367,9 @@ class TypescriptTransformRoutes extends Command
     /**
      * @template T of object
      *
-     * @param ReflectionMethod|ReflectionClass<T> $reflection
-     *
-     * @return string|null
+     * @param  ReflectionMethod|ReflectionClass<T>  $reflection
      */
-    private function explicitResponseType(ReflectionMethod|ReflectionClass $reflection): string|null
+    private function explicitResponseType(ReflectionMethod|ReflectionClass $reflection): ?string
     {
         return $this->explicitAttributeType($reflection, TypescriptResponseProps::class);
     }
@@ -379,11 +377,9 @@ class TypescriptTransformRoutes extends Command
     /**
      * @template T of object
      *
-     * @param ReflectionMethod|ReflectionClass<T> $reflection
-     *
-     * @return string|null
+     * @param  ReflectionMethod|ReflectionClass<T>  $reflection
      */
-    private function explicitRequestType(ReflectionMethod|ReflectionClass $reflection): string|null
+    private function explicitRequestType(ReflectionMethod|ReflectionClass $reflection): ?string
     {
         return $this->explicitAttributeType($reflection, TypescriptRequestProps::class);
     }
@@ -391,14 +387,12 @@ class TypescriptTransformRoutes extends Command
     /**
      * @template T of object
      *
-     * @param ReflectionMethod|ReflectionClass<T> $reflection
-     *
-     * @return string|null
+     * @param  ReflectionMethod|ReflectionClass<T>  $reflection
      */
     private function explicitAttributeType(
         ReflectionMethod|ReflectionClass $reflection,
         string $attributeType
-    ): string|null {
+    ): ?string {
         $attributes = $reflection->getAttributes($attributeType);
         if (! $attributes) {
             return null;
@@ -441,5 +435,4 @@ class TypescriptTransformRoutes extends Command
 
         return [];
     }
-
 }
