@@ -11,6 +11,5 @@ class ExampleResponseTypeData extends Data
     public function __construct(
         public string $message,
         public Carbon $createdAt,
-    ) {
-    }
+    ) {}
 }

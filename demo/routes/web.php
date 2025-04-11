@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\ExampleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\ExampleController;
-
 
 Route::prefix('example')->group(function () {
     Route::get('/manually-typed', [ExampleController::class, 'manuallyTyped'])->name('example.manually-typed');

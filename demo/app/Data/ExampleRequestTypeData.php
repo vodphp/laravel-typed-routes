@@ -11,7 +11,5 @@ class ExampleRequestTypeData extends Data
         public string $message,
         public ?string $name,
         public ?string $email,
-    ) {
-        
-    }
+    ) {}
 }
