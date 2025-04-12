@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Data\ExampleRequestTypeData;
 use App\Data\ExampleResponseTypeData;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Vod\LaravelTypedRoutes\Attributes\TypescriptRequestProps;
@@ -35,7 +34,8 @@ class ExampleController extends Controller
         );
     }
 
-    public function exampleForm(ExampleRequestTypeData $request): RedirectResponse {
-        return back()->withErrors(["form" => "Woah there!!"]);
+    public function exampleForm(ExampleRequestTypeData $request): RedirectResponse
+    {
+        return back()->withErrors(['form' => 'Woah there!!']);
     }
 }
