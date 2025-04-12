@@ -31,7 +31,7 @@ function camelToKebabCase(path: string) {
   }
   
 
-  interface RouteMethods<RequestType, ResponseType> {
+  export interface RouteMethods<RequestType, ResponseType> {
     method: 'get' | 'post' | 'put' | 'delete';
     request: RequestType;
     response: ResponseType;
@@ -41,16 +41,11 @@ function camelToKebabCase(path: string) {
     pathSegments?: PathSegment[];
   }
   
-  type RouteMethodFn = (...args: any[]) => RouteMethods<any, any>;
   
-  type Extended<T, E extends Record<string, any>> = {
-    [K in keyof T]: T[K] extends RouteMethods<any, any> ? E : 
-    T[K] extends RouteMethodFn ? () => ReturnType<T[K]> & E:
-    T[K] extends object ? Extended<T[K], E> : T[K]
-  }
+ 
+  export type ExtensionFunction = (arg: RouteMethods<any, any>) => Record<string, any>;
   
-  
-  export function typedRoutesClient<T extends object,  API extends Record<string, any>>(extend: (base: RouteMethods<any, any>) => API, options: RpcClientOptions = {pathSegments: []}): Extended<T, API> {
+  export function typedRoutesClient<T extends object>(extend: ExtensionFunction, options: RpcClientOptions = {pathSegments: []}): T {
     const pathSegments = options?.pathSegments ?? [];
   
     const definition = {
@@ -64,12 +59,12 @@ function camelToKebabCase(path: string) {
   
         const pathSegment = prop.replaceAll('/', '').trim();
         if (!pathSegment) {
-          return typedRoutesClient<T, API>(extend, {
+          return typedRoutesClient<T>(extend, {
             pathSegments,
           });
         }
   
-        return typedRoutesClient<T, API>(extend, {
+        return typedRoutesClient<T>(extend, {
           pathSegments: [...pathSegments, { type: 'simple', value: pathSegment }],
         });
       },
@@ -84,7 +79,7 @@ function camelToKebabCase(path: string) {
             href
           } as RouteMethods<any, any>)
         }
-        return typedRoutesClient<T, API>(extend, {
+        return typedRoutesClient<T>(extend, {
           pathSegments: [...pathSegments, { type: 'parameter', value: args[0] }],
         });
       },

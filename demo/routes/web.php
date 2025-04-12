@@ -7,6 +7,7 @@ use Inertia\Inertia;
 Route::prefix('example')->group(function () {
     Route::get('/manually-typed', [ExampleController::class, 'manuallyTyped'])->name('example.manually-typed');
     Route::post('/dto', [ExampleController::class, 'exampleDTO'])->name('example.dto');
+    Route::post('/form', [ExampleController::class, 'exampleForm'])->name('example.form');
 });
 
 Route::get('/', function () {

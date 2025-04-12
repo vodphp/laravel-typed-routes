@@ -32,6 +32,10 @@ export interface Routes {
         dto: {
             post: () => RouteMethods<App.Data.ExampleRequestTypeData, App.Data.ExampleResponseTypeData>;
         };
+
+        form: {
+            post: () => RouteMethods<App.Data.ExampleRequestTypeData, any>;
+        };
     };
 
     '': {
