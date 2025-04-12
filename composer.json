@@ -1,6 +1,6 @@
 {
     "name": "vod/laravel-typed-routes",
-    "description": "This is my package laravel-typed-routes",
+    "description": "Typescript route generation and TS client for Laravel",
     "version": "0.0.1",
     "keywords": [
         "Vod",
