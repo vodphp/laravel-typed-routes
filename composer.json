@@ -1,6 +1,7 @@
 {
     "name": "vod/laravel-typed-routes",
     "description": "This is my package laravel-typed-routes",
+    "version": "0.0.1",
     "keywords": [
         "Vod",
         "laravel",
